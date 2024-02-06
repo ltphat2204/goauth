@@ -54,3 +54,43 @@ Let's take a look at the `docker-compose.yml` file. There are many adjustable th
 - `ADMIN_USERNAME` and `ADMIN_PASSWORD` is used for creating the super account of the service.
 
 - `GIN_MODE` always `release` in production environment.
+
+
+## Usage
+
+### Getting JWT
+You can call a GET method with Authorization header to the `/token` endpoint to get your token. In default, the token will expire in 30 minutes.
+
+``` bash
+curl --location 'http://localhost:5050/token' \
+--header 'Authorization: Basic bHRwOjIyMDQ='
+```
+
+> Moreover, the text following `Basic ` is in format "`Username:Password`" in Base64 Encoding.
+
+If the account exists and the password is matched, the response will be like:
+
+``` bash
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M"
+}
+```
+
+### Verify JWT
+
+You can call a GET method with Authorization header to the `/verify` endpoint to verify the token.
+
+``` bash
+curl --location 'http://localhost:5050/verify' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M'
+```
+
+> Note: The value of `Authorization` header must match the format "`BEARER token`", where `token` is the token to be verified.
+
+If everything is OK, your response should be:
+
+```bash
+{
+    "message": "Valid token!"
+}
+```
