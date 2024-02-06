@@ -42,9 +42,15 @@ Let's take a look at the `docker-compose.yml` file. There are many adjustable th
 
 #### Auth service
 - In default, this service listens to port `5050`. You should change `ports` if there is any conflict. 
+
 - `MYSQL_USER` always `root`, or another account you have setting above.
+
 - `MYSQL_PASSWORD` and `MYSQL_DATABASE` must match `MYSQL_ROOT_PASSWORD` and `MYSQL_DATABASE` in the database setting.
+
 - `MYSQL_URL` with the structure of `database:port` (where port is the MySql port setting above).
+
 - `SECRET_KEY` is the key for signing JWT
+
 - `ADMIN_USERNAME` and `ADMIN_PASSWORD` is used for creating the super account of the service.
+
 - `GIN_MODE` always `release` in production environment.
