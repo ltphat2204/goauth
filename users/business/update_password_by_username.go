@@ -46,7 +46,7 @@ func (biz *updateUserBusiness) UpdatePasswordUser(ctx context.Context, username 
 
 	// Assign new password to user
 	var userWithNewPassword entity.User
-	userWithNewPassword = userWithNewPassword.Copy(*user)
+	userWithNewPassword = entity.CopyInformationFrom(*user)
 	userWithNewPassword.Password = string(hashedPassword)
 
 	// Update last access time

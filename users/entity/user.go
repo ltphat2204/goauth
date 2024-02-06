@@ -12,7 +12,8 @@ type User struct {
 // Table name of entity
 func (User) TableName() string { return "users" }
 
-func (a User) Copy(b UserShow) (User) {
+func CopyInformationFrom(b UserShow) (User) {
+	var a User
 	a.Username = b.Username
 	a.CreatedAt = b.CreatedAt
 	return a
