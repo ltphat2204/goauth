@@ -49,7 +49,7 @@ Let's take a look at the `docker-compose.yml` file. There are many adjustable th
 
 - `MYSQL_URL` with the structure of `database:port` (where port is the MySql port setting above).
 
-- `SECRET_KEY` is the key for signing JWT
+- `SECRET_KEY` is the key for signing JWT.
 
 - `ADMIN_USERNAME` and `ADMIN_PASSWORD` is used for creating the super account of the service.
 
