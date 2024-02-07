@@ -70,7 +70,7 @@ curl --location 'http://localhost:5050/token' \
 
 If the account exists and the password is matched, the response will be like:
 
-``` bash
+``` json
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M"
 }
@@ -89,8 +89,125 @@ curl --location 'http://localhost:5050/verify' \
 
 If everything is OK, your response should be:
 
-```bash
+``` json
 {
     "message": "Valid token!"
 }
 ```
+
+### Get list of users
+
+You can call a GET method to the `/` endpoint to get list of users.
+
+**Require**: Only token of Admin user is accepted.
+
+``` bash
+curl --location 'http://localhost:5050/' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M'
+```
+
+Example of successful response:
+
+``` json
+{
+    "users": [
+        {
+            "username": "ltp",
+            "created_at": "2024-02-06T12:58:31.298+07:00",
+            "last_access_at": "2024-02-07T21:37:05.085+07:00"
+        }
+    ]
+}
+```
+
+### Create new user
+
+You can call a POST method to `/` endpoint to create a new user.
+
+**Require**: Only token of Admin user is accepted.
+
+``` bash
+curl --location 'http://localhost:5050/' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "example",
+    "password": "example"
+}'
+```
+
+Example of successful response:
+
+```json
+{
+    "message": "User example created successfully!",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDczMTg5ODIsInVzZXJuYW1lIjoiZXhhbXBsZSJ9.aGwMtDT8SUGCBAMaIzWY49n7ilZo5qgk2nvj7RCPI_c"
+}
+```
+
+> You can use that token instantly without calling the get token api.
+
+### Get detail of user
+
+You can get detail of a user by calling a GET method to `/:username` endpoint, where username is the username of the user you want to get detail.
+
+**Require**: Only token of Admin user is accepted.
+
+``` bash
+curl --location 'http://localhost:5050/example' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M'
+```
+
+The successful response will be like:
+
+```json
+{
+    "data": {
+        "username": "example",
+        "created_at": "2024-02-07T21:46:22.373+07:00",
+        "last_access_at": "2024-02-07T21:46:22.373+07:00"
+    }
+}
+```
+
+### Change password
+
+You can call a PATCH method to `/:username` endpoint to change password of the username.
+
+**Require**: The token must belong to the username which is being changed password.
+
+``` bash
+curl --location --request PATCH  'http://localhost:5050/ltp' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M'
+--header 'Content-Type: application/json' \
+--data '{
+    "password": "another"
+}'
+```
+
+The successful response will be like:
+
+```json
+{
+    "message": "Password update successfully!"
+}
+```
+
+### Delete a user
+
+You can call a DELETE method to `/:username` endpoint to delete a user with the username.
+
+``` bash
+curl --location --request DELETE 'http://localhost:3030/example' \
+--header 'Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M'
+```
+
+The successful response will be like:
+
+```json
+{
+    "message": "User example deleted successfully!"
+}
+```
+
+> Note: You can not delete admin account
