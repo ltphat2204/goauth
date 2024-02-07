@@ -2,6 +2,8 @@ package business
 
 import (
 	"context" // i/o context
+	"os" // get env
+	"github.com/ltphat2204/goauth/users/entity" // get error
 )
 
 // Interface for delete new user in storage
@@ -20,6 +22,11 @@ func DeleteUserBusiness(s deleteUserStorage) *deleteUserBusiness {
 }
 
 func (biz *deleteUserBusiness) DeleteUser(ctx context.Context, username string) error {
+	// Prohibit from deleting admin user
+	if username == os.Getenv("ADMIN_USERNAME") {
+		return entity.ErrDelAdmin
+	}
+
 	// Delete user by username
 	err := biz.store.DeleteUser(ctx, username)
 
