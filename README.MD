@@ -211,3 +211,14 @@ The successful response will be like:
 ```
 
 > Note: You can not delete admin account
+
+## Customization
+Thanks to Clean Architect, it is pretty easy to customize the data model.
+
+Head over to the `users/entity`, you can add more field to the `User` struct. If that field occurs in most situation, you can add it to `common/mysql_model.go`. Then, every model in `users/entity` will be added.
+
+In term of working logic, take a look in the `users/business` and `users/transport` to modify the processing flow.
+
+Finally, if you want to use another database, some changes in `common/mysql.go` and `users/storage` are needed.
+
+Happy coding!
