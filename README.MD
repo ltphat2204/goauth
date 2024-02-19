@@ -72,7 +72,10 @@ If the account exists and the password is matched, the response will be like:
 
 ``` json
 {
-    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNTE1NDcsInVzZXJuYW1lIjoibHRwIn0.UN3viM1PE0JIrOaNusRysdjS_KkL3eJa6bG889-yr8M"
+    "success": true,
+    "data": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDgzNjY0NTksInVzZXJuYW1lIjoibHRwIn0.kKGCblGY19OIqRT-2MUpk_TEDBCv5XtPe285syhfTaU"
+    }
 }
 ```
 
@@ -91,7 +94,8 @@ If everything is OK, your response should be:
 
 ``` json
 {
-    "message": "Valid token!"
+    "success": true,
+    "data": "Valid token!"
 }
 ```
 
@@ -110,13 +114,16 @@ Example of successful response:
 
 ``` json
 {
-    "users": [
-        {
-            "username": "ltp",
-            "created_at": "2024-02-06T12:58:31.298+07:00",
-            "last_access_at": "2024-02-07T21:37:05.085+07:00"
-        }
-    ]
+    "success": true,
+    "data": {
+        "users": [
+            {
+                "username": "ltp",
+                "created_at": "2024-02-06T12:58:31.298+07:00",
+                "last_access_at": "2024-02-07T21:37:05.085+07:00"
+            }
+        ]
+    }
 }
 ```
 
@@ -140,8 +147,11 @@ Example of successful response:
 
 ```json
 {
-    "message": "User example created successfully!",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDczMTg5ODIsInVzZXJuYW1lIjoiZXhhbXBsZSJ9.aGwMtDT8SUGCBAMaIzWY49n7ilZo5qgk2nvj7RCPI_c"
+    "success": true,
+    "data": {
+        "message": "User example created successfully!",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDgzNjY2NzgsInVzZXJuYW1lIjoiZXhhbXBsZSJ9.-cekYlhG1QTtNPJQ-c9_Uk8iBnVP0r8OIO0fqIgSQuA"
+    }
 }
 ```
 
@@ -162,11 +172,12 @@ The successful response will be like:
 
 ```json
 {
+    "success": true,
     "data": {
-        "username": "example",
-        "created_at": "2024-02-07T21:46:22.373+07:00",
-        "last_access_at": "2024-02-07T21:46:22.373+07:00"
-    }
+            "username": "example",
+            "created_at": "2024-02-07T21:46:22.373+07:00",
+            "last_access_at": "2024-02-07T21:46:22.373+07:00"
+        }
 }
 ```
 
@@ -189,7 +200,10 @@ The successful response will be like:
 
 ```json
 {
-    "message": "Password update successfully!"
+    "success": true,
+    "data": {
+        "message": "Password update successfully!"
+    }
 }
 ```
 
@@ -206,7 +220,10 @@ The successful response will be like:
 
 ```json
 {
-    "message": "User example deleted successfully!"
+    "success": true,
+    "data": {
+        "message": "User example deleted successfully!"
+    }
 }
 ```
 
