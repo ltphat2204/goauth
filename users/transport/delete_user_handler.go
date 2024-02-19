@@ -7,6 +7,7 @@ import (
 	"github.com/ltphat2204/goauth/users/business" // business layer
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
 	"gorm.io/gorm"                                // interact with mysql
+	"github.com/ltphat2204/goauth/common"
 )
 
 func DeleteUser(db *gorm.DB) func(*gin.Context) {
@@ -23,13 +24,13 @@ func DeleteUser(db *gorm.DB) func(*gin.Context) {
 
 		// Can not delete a user
 		if err := biz.DeleteUser(c.Request.Context(), username); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
 		// Create new user successfully
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusOK, common.NewSimpleSuccessResponse(map[string]string{
 			"message": "User " + username + " deleted successfully!",
-		})
+		}))
 	}
 }

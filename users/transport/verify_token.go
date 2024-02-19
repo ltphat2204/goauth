@@ -1,11 +1,13 @@
 package transport
 
 import (
-	"github.com/gin-gonic/gin"                    // request
+	"net/http" // http status
+
+	"github.com/gin-gonic/gin" // request
+	"github.com/ltphat2204/goauth/common"
 	"github.com/ltphat2204/goauth/users/business" // business layer
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
 	"gorm.io/gorm"                                // interact with mysql
-	"net/http"                                    // http status
 )
 
 func VerifyToken(db *gorm.DB) func(*gin.Context) {
@@ -25,15 +27,19 @@ func VerifyToken(db *gorm.DB) func(*gin.Context) {
 		// Can not find user
 		data, err := biz.GetUserByUsername(c.Request.Context(), username.(string))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 		if data == nil {
-			c.JSON(http.StatusNotFound, gin.H{"message": "User not found!"})
+			c.JSON(http.StatusNotFound, common.NewErrorResponse(
+				http.StatusNotFound, 
+				"User not found", 
+				"Username " + username.(string) + " is not existing",
+			))
 			return
 		}
 
 		// Get user successfully
-		c.JSON(http.StatusFound, gin.H{"message": "Valid token!"})
+		c.JSON(http.StatusFound, common.NewSimpleSuccessResponse("Valid token!"))
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
 	"gorm.io/gorm"                                // interact with mysql
 	"net/http"                                    // http status
+	"github.com/ltphat2204/goauth/common"
 )
 
 func GetUserByUsername(db *gorm.DB) func(*gin.Context) {
@@ -23,15 +24,19 @@ func GetUserByUsername(db *gorm.DB) func(*gin.Context) {
 		// Can not find user
 		data, err := biz.GetUserByUsername(c.Request.Context(), username)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 		if data == nil {
-			c.JSON(http.StatusNotFound, gin.H{"message": "No username found!"})
+			c.JSON(http.StatusNotFound, common.NewErrorResponse(
+				http.StatusNotFound, 
+				"User not found", 
+				"Username " + username + " is not existing",
+			))
 			return
 		}
 
 		// Get user successfully
-		c.JSON(http.StatusFound, gin.H{"data": data})
+		c.JSON(http.StatusFound, common.NewSimpleSuccessResponse(data))
 	}
 }

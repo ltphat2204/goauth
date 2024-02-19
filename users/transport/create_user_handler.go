@@ -19,7 +19,7 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 
 		// Input lacks something
 		if err := c.ShouldBind(&data); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
@@ -32,13 +32,13 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		// Get user token
 		token, err := common.GenerateToken(map[string]interface{}{"username": data.Username})
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
 		// Can not create new user
 		if err := biz.CreateNewUser(c.Request.Context(), &data); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 

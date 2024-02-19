@@ -6,6 +6,7 @@ import (
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
 	"gorm.io/gorm"                                // interact with mysql
 	"net/http"                                    // http status
+	"github.com/ltphat2204/goauth/common"
 )
 
 func GetAllUsers(db *gorm.DB) func(*gin.Context) {
@@ -20,15 +21,11 @@ func GetAllUsers(db *gorm.DB) func(*gin.Context) {
 		// Can not find user
 		data, err := biz.FindAllUsers(c.Request.Context(), map[string]interface{}{})
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-			return
-		}
-		if data == nil {
-			c.JSON(http.StatusNotFound, gin.H{"message": "No account found!"})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
 		// Find user successfully
-		c.JSON(http.StatusFound, gin.H{"users": data})
+		c.JSON(http.StatusFound, common.NewSimpleSuccessResponse(data))
 	}
 }

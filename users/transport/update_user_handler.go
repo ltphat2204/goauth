@@ -3,7 +3,8 @@ package transport
 import (
 	"net/http" // http status
 
-	"github.com/gin-gonic/gin"                    // request
+	"github.com/gin-gonic/gin" // request
+	"github.com/ltphat2204/goauth/common"
 	"github.com/ltphat2204/goauth/users/business" // business layer
 	"github.com/ltphat2204/goauth/users/entity"   // entity layer
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
@@ -17,13 +18,13 @@ func UpdatePasswordByUsername(db *gorm.DB) func(*gin.Context) {
 		username, usernameExist := c.Get("username")
 
 		if !usernameExist {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Error in verify token!"})
+			c.JSON(http.StatusUnauthorized, common.NewErrorResponse(http.StatusUnauthorized, "Token error", "Can not validate token"))
 			return
 		}
 
 		// Check username match
 		if username != c.Param("username") {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "No right to change another's password"})
+			c.JSON(http.StatusUnauthorized, common.NewErrorResponse(http.StatusUnauthorized, "Token error", "No right to change another's password"))
 			return
 		}
 
@@ -32,7 +33,7 @@ func UpdatePasswordByUsername(db *gorm.DB) func(*gin.Context) {
 
 		// Input lacks something
 		if err := c.ShouldBind(&data); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
@@ -48,11 +49,11 @@ func UpdatePasswordByUsername(db *gorm.DB) func(*gin.Context) {
 		// Update password
 		err := biz.UpdatePasswordUser(c.Request.Context(), username.(string), password)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
 		// Get user successfully
-		c.JSON(http.StatusOK, gin.H{"message": "Password update successfully!"})
+		c.JSON(http.StatusOK, common.NewSimpleSuccessResponse(map[string]string{"message": "Password updated successfully"}))
 	}
 }

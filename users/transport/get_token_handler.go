@@ -6,6 +6,7 @@ import (
 	"github.com/ltphat2204/goauth/users/storage"  // storage layer
 	"gorm.io/gorm"                                // interact with mysql
 	"net/http"                                    // http status
+	"github.com/ltphat2204/goauth/common"
 )
 
 func GetTokenFromUser(db *gorm.DB) func(*gin.Context) {
@@ -14,7 +15,7 @@ func GetTokenFromUser(db *gorm.DB) func(*gin.Context) {
 		username, password, hasAuth := c.Request.BasicAuth()
 
 		if !hasAuth {
-			c.JSON(http.StatusNotAcceptable, gin.H{"message": "No account found!"})
+			c.JSON(http.StatusNotAcceptable, common.NewErrorResponse(http.StatusNotAcceptable, "Authorization fail", "No account found" ))
 			return
 		}
 
@@ -27,11 +28,11 @@ func GetTokenFromUser(db *gorm.DB) func(*gin.Context) {
 		// Can not find user
 		token, err := biz.GetTokenFromUser(c.Request.Context(), username, password)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse(err.Error()))
 			return
 		}
 
 		// Get user successfully
-		c.JSON(http.StatusFound, gin.H{"token": token})
+		c.JSON(http.StatusFound, common.NewSimpleSuccessResponse(map[string]string{"token": token}))
 	}
 }
