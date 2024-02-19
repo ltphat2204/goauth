@@ -43,9 +43,9 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		}
 
 		// Create new user successfully
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusOK, common.NewSimpleSuccessResponse(map[string]string{
 			"message": "User " + data.Username + " created successfully!", 
 			"token": token,
-		})
+		}))
 	}
 }
