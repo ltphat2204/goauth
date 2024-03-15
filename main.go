@@ -1,15 +1,17 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/ltphat2204/goauth/common"
 	"github.com/ltphat2204/goauth/middlewares"
 	"github.com/ltphat2204/goauth/users/business"
+	"github.com/ltphat2204/goauth/users/entity"
 	"github.com/ltphat2204/goauth/users/transport"
 	"gorm.io/gorm"
-	"log"
-	"os"
 )
 
 var database *gorm.DB
@@ -30,7 +32,7 @@ func init() {
 	database = common.ConnectDB()
 
 	// Create `users` table in MySql
-	if err := business.CreateTableUser(database); err != nil {
+	if err := database.AutoMigrate(&entity.User{}); err != nil {
 		log.Fatal(err.Error())
 	}
 
