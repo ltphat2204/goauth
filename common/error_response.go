@@ -28,7 +28,8 @@ func NewErrorResponse(code int, message string, detail string) *errorResponse {
 func NewSimpleErrorResponse(message string) *errorResponse {
 	err := errorFormat{
 		Code:    http.StatusBadRequest,
-		Message: message,
+		Message: "Error",
+		Detail: message,
 	}
 	return &errorResponse{
 		Success: false,
