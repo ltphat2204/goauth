@@ -1,12 +1,14 @@
 package middlewares
 
 import (
+	"net/http" // http status
+	"os"       // load .env
+	"strings"  // upper and compare string
+	"time"     // get now
+
 	"github.com/gin-gonic/gin"     // request
 	"github.com/golang-jwt/jwt/v5" // parse json web token
-	"net/http"                     // http status
-	"os"                           // load .env
-	"strings"                      // upper and compare string
-	"time"                         // get now
+	"github.com/ltphat2204/goauth/common"
 )
 
 func AuthMiddleware(c *gin.Context) {
@@ -15,7 +17,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	// No Auth
 	if tokenString == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "No Token found!"})
+		c.JSON(http.StatusUnauthorized, common.NewErrorResponse(http.StatusUnauthorized, "Unkown user", "no token provided"))
 		c.Abort()
 		return
 	}
@@ -26,7 +28,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Validate token
 	if strings.Compare(strings.ToUpper(method), "BEARER") != 0 || tokenString == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token!"})
+		c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse("missing AUTH method, BEARER or BASIC"))
 		c.Abort()
 		return
 	}
@@ -39,7 +41,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Validate token
 	if err != nil || !token.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token!"})
+		c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse("invalid token"))
 		c.Abort()
 		return
 	}
@@ -47,7 +49,7 @@ func AuthMiddleware(c *gin.Context) {
 	// Claim token
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Token can not claim!"})
+		c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse("something went wrong in reading token"))
 		c.Abort()
 		return
 	}
@@ -55,7 +57,7 @@ func AuthMiddleware(c *gin.Context) {
 	// Get username
 	username, exists := claims["username"].(string)
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Token can not claim!"})
+		c.JSON(http.StatusBadRequest, common.NewSimpleErrorResponse("invalid token body"))
 		c.Abort()
 		return
 	}
@@ -66,7 +68,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	// Token expired
 	if expire.Time.Unix() < time.Now().Unix() {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Expired token!"})
+		c.JSON(http.StatusUnauthorized, common.NewErrorResponse(http.StatusUnauthorized, "Invalid token", "token expired"))
 		c.Abort()
 		return
 	}
